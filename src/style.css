@@ -162,3 +162,45 @@ body,
   width: 100%;
   overflow-x: hidden;
 }
+
+/* Final hero image sizing fix */
+@media (max-width: 600px) {
+.hero {
+position: relative;
+min-height: 510px;
+isolation: isolate;
+}
+
+.hero-art {
+position: absolute !important;
+inset: 0;
+width: 100% !important;
+height: auto !important;
+opacity: 1;
+overflow: hidden;
+z-index: 0 !important;
+}
+
+.hero-art img {
+display: block;
+width: 100%;
+height: 100%;
+object-fit: cover !important;
+object-position: 30% center;
+}
+
+.hero:after {
+z-index: 1;
+background: linear-gradient(
+90deg,
+rgba(5, 13, 30, 0.15) 0%,
+rgba(5, 13, 30, 0.40) 40%,
+rgba(5, 13, 30, 0.88) 100%
+);
+}
+
+.hero-copy,
+.hero-progress {
+z-index: 2;
+}
+}
