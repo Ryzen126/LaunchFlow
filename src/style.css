@@ -126,3 +126,39 @@ header{height:88px;display:flex;align-items:center;gap:12px;padding:0 32px}.mobi
   width: 100%;
   height: 100%;
 }
+
+/* LaunchFlow mobile artwork and menu fixes */
+@media (max-width: 900px) {
+  .mobile.mobile-menu {
+    display: grid !important;
+    place-items: center;
+    background: linear-gradient(145deg, #101b3a, #171d49) !important;
+    color: #f7f8ff !important;
+    border: 1px solid #435a99 !important;
+    border-radius: 15px !important;
+  }
+
+  .mobile.mobile-menu svg {
+    color: #c5b7ff;
+    stroke-width: 2.2;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-art {
+    width: 60%;
+    left: 0;
+  }
+
+  .hero-art img {
+    object-fit: contain;
+    object-position: left center;
+  }
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
