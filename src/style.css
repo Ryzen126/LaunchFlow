@@ -76,3 +76,53 @@ header{height:88px;display:flex;align-items:center;gap:12px;padding:0 32px}.mobi
   .profile-card{padding:15px 18px}.profile-card .logo{width:72px;height:72px;flex-basis:72px}.profile-card .secondary{font-size:11px;padding:11px 12px}
   .auth-card{width:calc(100% - 36px);margin:0 18px;padding:31px 22px 26px}.auth-card>.logo{width:76px;height:76px}.auth-card h2{font-size:27px}
 }
+
+/* LaunchFlow mobile fixes — October 2026 */
+
+/* 1. Use the dedicated landscape Starry Night hero artwork */
+.hero-art img {
+  content: url('/launchflow-starry-night-hero.jpg');
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 2. Match the hamburger menu to LaunchFlow's dark navy/purple theme */
+@media (max-width: 900px) {
+  .mobile.mobile-menu {
+    background: linear-gradient(145deg, #101b3a, #171d49);
+    color: #f7f8ff;
+    border: 1px solid #435a99;
+    border-radius: 15px;
+    box-shadow: 0 0 18px #6655ff12;
+  }
+
+  .mobile.mobile-menu svg {
+    color: #c5b7ff;
+    stroke-width: 2.2;
+  }
+}
+
+/* 3. Add room for the Android status bar / display cutout */
+@media (max-width: 900px) {
+  .app {
+    padding-top: max(12px, env(safe-area-inset-top, 0px));
+  }
+
+  header {
+    flex-shrink: 0;
+  }
+}
+
+/* Ensure the replacement artwork stays inside the rounded hero card */
+.hero {
+  overflow: hidden;
+}
+
+.hero-art {
+  overflow: hidden;
+}
+
+.hero-art img {
+  width: 100%;
+  height: 100%;
+}
