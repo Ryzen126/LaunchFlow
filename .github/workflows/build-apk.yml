@@ -72,6 +72,38 @@ jobs:
               s = s.replace("targetSdkVersion = 34", "targetSdkVersion = 35")
               p.write_text(s)
           PY
+       - name: Configure Android system bars
+    run: |
+      python3 - <<'PY'
+      from pathlib import Path
+
+      files = list(Path("android/app/src/main").rglob("MainActivity.java"))
+      if not files:
+          raise SystemExit("MainActivity.java not found")
+
+      p = files[0]
+      s = p.read_text()
+
+      if "WindowCompat.setDecorFitsSystemWindows" not in s:
+          s = s.replace(
+              "import com.getcapacitor.BridgeActivity;",
+              "import com.getcapacitor.BridgeActivity;\n"
+              "import androidx.core.view.WindowCompat;"
+          )
+
+          s = s.replace(
+              "public class MainActivity extends BridgeActivity {",
+              "public class MainActivity extends BridgeActivity {\n"
+              "    @Override\n"
+              "    public void onCreate(android.os.Bundle savedInstanceState) {\n"
+              "        super.onCreate(savedInstanceState);\n"
+              "        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);\n"
+              "        getWindow().setStatusBarColor(android.graphics.Color.rgb(5, 11, 27));\n"
+              "        getWindow().setNavigationBarColor(android.graphics.Color.rgb(5, 11, 27));\n"
+              "    }\n"
+          )
+          p.write_text(s)
+      PY
 
       - name: Sync LaunchFlow into Android
         run: npx cap sync android
