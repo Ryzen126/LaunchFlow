@@ -1,91 +1,97 @@
 name: Build LaunchFlow APK
 
 on:
-workflow_dispatch:
-push:
-branches:
-- main
-- master
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
 
 jobs:
-build:
-name: Build Android APK
-runs-on: ubuntu-24.04
+  build:
+    name: Build Android APK
+    runs-on: ubuntu-24.04
 
-steps:
-  - name: Checkout LaunchFlow
-    uses: actions/checkout@v7
+    steps:
+      - name: Checkout LaunchFlow
+        uses: actions/checkout@v7
 
-  - name: Set up Node.js
-    uses: actions/setup-node@v7
-    with:
-      node-version: '24'
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
 
-  - name: Set up Java
-    uses: actions/setup-java@v6
-    with:
-      distribution: temurin
-      java-version: '21'
+      - name: Set up Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
 
-  - name: Set up Android SDK
-    uses: android-actions/setup-android@v4
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
 
-  - name: Install Android SDK packages
-    run: |
-      sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android SDK packages
+        run: |
+          sdkmanager "platforms;android-35" "build-tools;35.0.0"
 
-  - name: Install web app dependencies
-    run: npm install
+      - name: Install web app dependencies
+        run: npm install
 
-  - name: Install Capacitor
-    run: |
-      npm install @capacitor/core@7.4.3
-      npm install @capacitor/cli@7.4.3
-      npm install @capacitor/android@7.4.3
+      - name: Install Capacitor
+        run: |
+          npm install @capacitor/core@7.4.3
+          npm install @capacitor/cli@7.4.3
+          npm install @capacitor/android@7.4.3
 
-  - name: Build web app
-    run: npm run build
+      - name: Build web app
+        run: npm run build
 
-  - name: Create Capacitor configuration
-    run: |
-      cat > capacitor.config.json <<'EOF'
-      {
-        "appId": "com.launchflow.app",
-        "appName": "LaunchFlow",
-        "webDir": "dist"
-      }
-      EOF
+      - name: Create Capacitor configuration
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "com.launchflow.app",
+            "appName": "LaunchFlow",
+            "webDir": "dist"
+          }
+          EOF
 
-  - name: Create Android project
-    run: npx cap add android
+      - name: Create Android project
+        run: npx cap add android
 
-  - name: Set Android SDK versions
-    run: |
-      python3 - <<'PY'
-      from pathlib import Path
+      - name: Set Android SDK versions
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
 
-      p = Path("android/variables.gradle")
+          p = Path("android/variables.gradle")
 
-      if p.exists():
-          s = p.read_text()
-          s = s.replace("compileSdkVersion = 34", "compileSdkVersion = 35")
-          s = s.replace("targetSdkVersion = 34", "targetSdkVersion = 35")
-          p.write_text(s)
-      PY
+          if p.exists():
+              s = p.read_text()
+              s = s.replace(
+                  "compileSdkVersion = 34",
+                  "compileSdkVersion = 35"
+              )
+              s = s.replace(
+                  "targetSdkVersion = 34",
+                  "targetSdkVersion = 35"
+              )
+              p.write_text(s)
+          PY
 
-  - name: Sync LaunchFlow into Android
-    run: npx cap sync android
+      - name: Sync LaunchFlow into Android
+        run: npx cap sync android
 
-  - name: Make Gradle executable
-    run: chmod +x android/gradlew
+      - name: Make Gradle executable
+        run: chmod +x android/gradlew
 
-  - name: Build Debug APK
-    working-directory: android
-    run: ./gradlew assembleDebug --stacktrace
+      - name: Build Debug APK
+        working-directory: android
+        run: ./gradlew assembleDebug --stacktrace
 
-  - name: Upload APK
-    uses: actions/upload-artifact@v7
-    with:
-      name: LaunchFlow-debug-apk
-      path: android/app/build/outputs/apk/debug/app-debug.apk
-      if-no-files-found: error
+      - name: Upload APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: LaunchFlow-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
